@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tournament Bracket</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1 id="bracket-title">Tournament Bracket</h1>
+        <div class="bracket-container">
+            <!-- Top Half -->
+            <div class="bracket-half top-half">
+                <div class="quadrant" id="quadrant-1">
+                    <h2>Region 1</h2>
+                    <div class="quadrant-bracket">
+                        <div class="round round-1-q1">
+                            <h4>Round 1</h4>
+                            <div class="matches" id="round-1-q1-matches"></div>
+                        </div>
+                        <div class="round round-2-q1">
+                            <h4>Round 2</h4>
+                            <div class="matches" id="round-2-q1-matches"></div>
+                        </div>
+                        <div class="round round-3-q1">
+                            <h4>Sweet 16</h4>
+                            <div class="matches" id="round-3-q1-matches"></div>
+                        </div>
+                        <div class="round round-4-q1">
+                            <h4>Elite 8</h4>
+                            <div class="matches" id="round-4-q1-matches"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="quadrant" id="quadrant-2">
+                    <h2>Region 2</h2>
+                    <div class="quadrant-bracket">
+                        <div class="round round-1-q2">
+                            <h4>Round 1</h4>
+                            <div class="matches" id="round-1-q2-matches"></div>
+                        </div>
+                        <div class="round round-2-q2">
+                            <h4>Round 2</h4>
+                            <div class="matches" id="round-2-q2-matches"></div>
+                        </div>
+                        <div class="round round-3-q2">
+                            <h4>Sweet 16</h4>
+                            <div class="matches" id="round-3-q2-matches"></div>
+                        </div>
+                        <div class="round round-4-q2">
+                            <h4>Elite 8</h4>
+                            <div class="matches" id="round-4-q2-matches"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Center Final Four and Championship -->
+            <div class="center-bracket">
+                <div class="round round-5">
+                    <h3>Final 4</h3>
+                    <div class="matches" id="round-5-matches"></div>
+                </div>
+                
+                <div class="round round-6">
+                    <h3>Championship</h3>
+                    <div class="matches" id="round-6-matches"></div>
+                </div>
+                
+                <div class="round winner-round">
+                    <h3>Champion</h3>
+                    <div class="winner" id="champion">
+                        <div class="team-slot">TBD</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Bottom Half -->
+            <div class="bracket-half bottom-half">
+                <div class="quadrant" id="quadrant-3">
+                    <h2>Region 3</h2>
+                    <div class="quadrant-bracket">
+                        <div class="round round-1-q3">
+                            <h4>Round 1</h4>
+                            <div class="matches" id="round-1-q3-matches"></div>
+                        </div>
+                        <div class="round round-2-q3">
+                            <h4>Round 2</h4>
+                            <div class="matches" id="round-2-q3-matches"></div>
+                        </div>
+                        <div class="round round-3-q3">
+                            <h4>Sweet 16</h4>
+                            <div class="matches" id="round-3-q3-matches"></div>  
+                        </div>
+                        <div class="round round-4-q3">
+                            <h4>Elite 8</h4>
+                            <div class="matches" id="round-4-q3-matches"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="quadrant" id="quadrant-4">
+                    <h2>Region 4</h2>
+                    <div class="quadrant-bracket">
+                        <div class="round round-1-q4">
+                            <h4>Round 1</h4>
+                            <div class="matches" id="round-1-q4-matches"></div>
+                        </div>
+                        <div class="round round-2-q4">
+                            <h4>Round 2</h4>
+                            <div class="matches" id="round-2-q4-matches"></div>
+                        </div>
+                        <div class="round round-3-q4">
+                            <h4>Sweet 16</h4>
+                            <div class="matches" id="round-3-q4-matches"></div>
+                        </div>
+                        <div class="round round-4-q4">
+                            <h4>Elite 8</h4>
+                            <div class="matches" id="round-4-q4-matches"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bracket-selector">
+            <span>Select Bracket:</span>
+            <button class="bracket-option" data-bracket="food">Food</button>
+            <button class="bracket-option" data-bracket="rappers">Rappers</button>
+            <button class="bracket-option" data-bracket="stags">Stags</button>
+        </div>
+
+        <div class="controls">
+            <button id="reset-bracket">Reset Bracket</button>
+            <button id="randomize-teams">Randomize Teams</button>
+        </div>
+        
+        <div class="custom-input-container" id="custom-input-container" style="display: none;">
+            <h3>Enter 16 items for each region (one per line)</h3>
+            <div class="regions-input">
+                <div class="region-input">
+                    <h4>Region 1</h4>
+                    <textarea id="region-1-input" placeholder="Enter 16 items, one per line..." rows="16"></textarea>
+                </div>
+                <div class="region-input">
+                    <h4>Region 2</h4>
+                    <textarea id="region-2-input" placeholder="Enter 16 items, one per line..." rows="16"></textarea>
+                </div>
+                <div class="region-input">
+                    <h4>Region 3</h4>
+                    <textarea id="region-3-input" placeholder="Enter 16 items, one per line..." rows="16"></textarea>
+                </div>
+                <div class="region-input">
+                    <h4>Region 4</h4>
+                    <textarea id="region-4-input" placeholder="Enter 16 items, one per line..." rows="16"></textarea>
+                </div>
+            </div>
+            <div class="input-controls">
+                <button id="load-custom-songs">Load Custom Songs</button>
+                <button id="cancel-custom-input">Cancel</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
