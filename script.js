@@ -39,7 +39,8 @@ class MarchMadnessBracket {
             this.hideCustomInput();
             // Remove active state from custom button
             document.querySelectorAll('.bracket-option').forEach(btn => {
-                btn.classList.remove('active');
+                btn.classList.remove('bg-emerald-600', 'text-white');
+                btn.classList.add('bg-zinc-700', 'text-zinc-100');
             });
         });
     }
@@ -47,9 +48,12 @@ class MarchMadnessBracket {
     selectBracket(bracketType) {
         // Update active button state
         document.querySelectorAll('.bracket-option').forEach(btn => {
-            btn.classList.remove('active');
+            btn.classList.remove('bg-emerald-600', 'text-white');
+            btn.classList.add('bg-zinc-700', 'text-zinc-100');
         });
-        document.querySelector(`[data-bracket="${bracketType}"]`).classList.add('active');
+        const activeBtn = document.querySelector(`[data-bracket="${bracketType}"]`);
+        activeBtn.classList.remove('bg-zinc-700', 'text-zinc-100');
+        activeBtn.classList.add('bg-emerald-600', 'text-white');
 
         if (bracketType === 'custom') {
             this.toggleCustomInput();
@@ -85,7 +89,7 @@ class MarchMadnessBracket {
         if (teams.length !== 64) {
             throw new Error('Exactly 64 teams required for March Madness bracket');
         }
-        
+
         this.teams = teams;
         this.resetBracket();
         this.populateFirstRound();
@@ -96,11 +100,11 @@ class MarchMadnessBracket {
         if (region1.length !== 16 || region2.length !== 16 || region3.length !== 16 || region4.length !== 16) {
             throw new Error('Each region must contain exactly 16 teams');
         }
-        
+
         if (regionNames) {
             this.setRegionNames(regionNames);
         }
-        
+
         const teams = [...region1, ...region2, ...region3, ...region4];
         this.setTeams(teams);
     }
@@ -109,14 +113,14 @@ class MarchMadnessBracket {
         if (teamsList.length !== 64) {
             throw new Error('Exactly 64 teams required');
         }
-        
+
         let teams = [...teamsList];
-        
+
         if (randomize) {
             // Shuffle entire list
             teams = this.shuffleArray(teams);
         }
-        
+
         this.setTeams(teams);
     }
 
@@ -135,7 +139,7 @@ class MarchMadnessBracket {
             document.querySelector('#quadrant-3 h2'),
             document.querySelector('#quadrant-4 h2')
         ];
-        
+
         quadrants.forEach((quadrant, index) => {
             if (quadrant) {
                 quadrant.textContent = this.regionNames[index];
@@ -161,7 +165,7 @@ class MarchMadnessBracket {
         for (let quadrant = 1; quadrant <= 4; quadrant++) {
             const startIndex = (quadrant - 1) * 16;
             const quadrantTeams = this.teams.slice(startIndex, startIndex + 16);
-            
+
             // Round 1: 16 teams -> 8 matches
             this.bracket.quadrants[quadrant].rounds[1] = [];
             for (let i = 0; i < 16; i += 2) {
@@ -207,7 +211,7 @@ class MarchMadnessBracket {
         for (let quadrant = 1; quadrant <= 4; quadrant++) {
             this.renderQuadrant(quadrant);
         }
-        
+
         // Render Final Four and Championship
         this.renderFinalFour();
         this.renderChampionship();
@@ -220,16 +224,16 @@ class MarchMadnessBracket {
             if (!container) continue;
 
             container.innerHTML = '';
-            
+
             this.bracket.quadrants[quadrant].rounds[round].forEach((match, index) => {
                 const matchDiv = document.createElement('div');
-                matchDiv.className = 'match';
+                matchDiv.className = 'bg-zinc-800 rounded p-1.5 border border-zinc-700';
                 matchDiv.setAttribute('data-quadrant', quadrant);
                 matchDiv.setAttribute('data-round', round);
                 matchDiv.setAttribute('data-match', index);
 
-                const team1Div = this.createTeamElement(match.team1, match.winner === match.team1, `q${quadrant}`, round, index, 0);
-                const team2Div = this.createTeamElement(match.team2, match.winner === match.team2, `q${quadrant}`, round, index, 1);
+                const team1Div = this.createTeamElement(match.team1, match.winner === match.team1, `q${quadrant}`, round, index, 0, match);
+                const team2Div = this.createTeamElement(match.team2, match.winner === match.team2, `q${quadrant}`, round, index, 1, match);
 
                 matchDiv.appendChild(team1Div);
                 matchDiv.appendChild(team2Div);
@@ -243,15 +247,15 @@ class MarchMadnessBracket {
         if (!container) return;
 
         container.innerHTML = '';
-        
+
         this.bracket.finalFour.forEach((match, index) => {
             const matchDiv = document.createElement('div');
-            matchDiv.className = 'match';
+            matchDiv.className = 'bg-zinc-800 rounded p-1.5 border border-zinc-700 flex-1';
             matchDiv.setAttribute('data-round', 5);
             matchDiv.setAttribute('data-match', index);
 
-            const team1Div = this.createTeamElement(match.team1, match.winner === match.team1, 'f4', 5, index, 0);
-            const team2Div = this.createTeamElement(match.team2, match.winner === match.team2, 'f4', 5, index, 1);
+            const team1Div = this.createTeamElement(match.team1, match.winner === match.team1, 'f4', 5, index, 0, match);
+            const team2Div = this.createTeamElement(match.team2, match.winner === match.team2, 'f4', 5, index, 1, match);
 
             matchDiv.appendChild(team1Div);
             matchDiv.appendChild(team2Div);
@@ -264,48 +268,43 @@ class MarchMadnessBracket {
         if (!container) return;
 
         container.innerHTML = '';
-        
+
         const match = this.bracket.championship;
         const matchDiv = document.createElement('div');
-        matchDiv.className = 'match';
+        matchDiv.className = 'bg-zinc-800 rounded p-1.5 border border-zinc-700';
         matchDiv.setAttribute('data-round', 6);
         matchDiv.setAttribute('data-match', 0);
 
-        const team1Div = this.createTeamElement(match.team1, match.winner === match.team1, 'champ', 6, 0, 0);
-        const team2Div = this.createTeamElement(match.team2, match.winner === match.team2, 'champ', 6, 0, 1);
+        const team1Div = this.createTeamElement(match.team1, match.winner === match.team1, 'champ', 6, 0, 0, match);
+        const team2Div = this.createTeamElement(match.team2, match.winner === match.team2, 'champ', 6, 0, 1, match);
 
         matchDiv.appendChild(team1Div);
         matchDiv.appendChild(team2Div);
         container.appendChild(matchDiv);
     }
 
-    createTeamElement(teamName, isWinner, section, round, matchIndex, teamIndex) {
+    createTeamElement(teamName, isWinner, section, round, matchIndex, teamIndex, match) {
         const teamDiv = document.createElement('div');
-        teamDiv.className = 'team';
-        
+
+        // Base classes for all team elements
+        const baseClasses = 'rounded px-3 py-2 text-center text-sm transition-colors';
+
         if (!teamName) {
-            teamDiv.className += ' empty';
+            // Empty/TBD state
+            teamDiv.className = `${baseClasses} bg-zinc-800 text-zinc-600 italic cursor-not-allowed`;
             teamDiv.textContent = 'TBD';
         } else {
             teamDiv.textContent = teamName;
-            
+
             if (isWinner) {
-                teamDiv.className += ' winner';
+                // Winner state
+                teamDiv.className = `${baseClasses} bg-emerald-600 text-white cursor-pointer`;
+            } else if (match && match.winner && match.winner !== teamName) {
+                // Loser state
+                teamDiv.className = `${baseClasses} bg-zinc-800 text-zinc-500 opacity-60 cursor-not-allowed`;
             } else {
-                // Check if match has a winner and this isn't it
-                let match;
-                if (section.startsWith('q')) {
-                    const quadrant = parseInt(section.slice(1));
-                    match = this.bracket.quadrants[quadrant].rounds[round][matchIndex];
-                } else if (section === 'f4') {
-                    match = this.bracket.finalFour[matchIndex];
-                } else if (section === 'champ') {
-                    match = this.bracket.championship;
-                }
-                
-                if (match && match.winner && match.winner !== teamName) {
-                    teamDiv.className += ' loser';
-                }
+                // Default clickable state
+                teamDiv.className = `${baseClasses} bg-zinc-700 text-zinc-100 hover:bg-zinc-600 cursor-pointer`;
             }
 
             teamDiv.addEventListener('click', () => {
@@ -318,9 +317,9 @@ class MarchMadnessBracket {
 
     selectWinner(section, round, matchIndex, teamName, teamIndex) {
         if (!teamName || teamName === 'TBD') return;
-        
+
         let match;
-        
+
         // Get the match based on section
         if (section.startsWith('q')) {
             const quadrant = parseInt(section.slice(1));
@@ -330,15 +329,15 @@ class MarchMadnessBracket {
         } else if (section === 'champ') {
             match = this.bracket.championship;
         }
-        
+
         if (!match) return;
-        
+
         // Set winner
         match.winner = teamName;
-        
+
         // Advance winner
         this.advanceWinner(section, round, matchIndex, teamName);
-        
+
         // Re-render affected sections
         if (section.startsWith('q')) {
             const quadrant = parseInt(section.slice(1));
@@ -352,20 +351,20 @@ class MarchMadnessBracket {
         } else if (section === 'champ') {
             this.renderChampionship();
         }
-        
+
         this.renderChampion();
     }
 
     advanceWinner(section, round, matchIndex, winner) {
         if (section.startsWith('q')) {
             const quadrant = parseInt(section.slice(1));
-            
+
             if (round < 4) {
                 // Advance within quadrant
                 const nextRound = round + 1;
                 const nextMatchIndex = Math.floor(matchIndex / 2);
                 const teamPosition = matchIndex % 2;
-                
+
                 const nextMatch = this.bracket.quadrants[quadrant].rounds[nextRound][nextMatchIndex];
                 if (teamPosition === 0) {
                     nextMatch.team1 = winner;
@@ -376,7 +375,7 @@ class MarchMadnessBracket {
                 // Advance to Final Four
                 const finalFourIndex = quadrant <= 2 ? 0 : 1;
                 const teamPosition = (quadrant - 1) % 2;
-                
+
                 if (teamPosition === 0) {
                     this.bracket.finalFour[finalFourIndex].team1 = winner;
                 } else {
@@ -415,10 +414,10 @@ class MarchMadnessBracket {
         if (!championDiv) return;
 
         const champion = this.bracket.winner;
-        
+
         const teamSlot = championDiv.querySelector('.team-slot');
         teamSlot.textContent = champion || 'TBD';
-        
+
         if (champion) {
             championDiv.classList.add('has-champion');
         } else {
@@ -439,36 +438,36 @@ class MarchMadnessBracket {
                 winner: null
             };
         }
-        
+
         this.renderBracket();
     }
 
     loadSampleTeams(datasetName = 'food') {
         let teams = [];
-        
+
         switch(datasetName) {
             case 'rappers':
                 const region1 = [
                     "Tupac", "Kendrick Lamar", "Dr. Dre", "Snoop Dogg", "Ice Cube", "E-40", "The Game", "Tyler, the Creator", "Vince Staples", "Schoolboy Q", "Nate Dogg", "Anderson .Paak", "Drake", "Childish Gambino", "Trippie Redd", "YG"
                 ];
-                
+
                 const region2 = [
                     "Jay-Z", "Nas", "Biggie", "DMX", "50 Cent", "Eminem", "Pop Smoke", "MF DOOM", "A$AP Rocky", "Joey Bada$$", "Nicki Minaj", "Action Bronson", "Meek Mill", "A$AP Ferg", "Kid Cudi", "Lil Uzi Vert"
                 ];
-                
+
                 const region3 = [
                   "Future", "Young Thug", "Lil Baby", "21 Savage", "Gunna", "Jeezy", "T.I.", "Gucci Mane", "Andre 3000", "Playboi Carti", "Waka Flocka", "Lil Yachty", "Kodak Black", "2 Chainz", "Big Sean", "Rich Homie Quan"
                 ];
-                
+
                 const region4 = [
                    "Kanye West", "Chief Keef", "Juice WRLD", "Pusha T", "Mike Jones", "J. Cole", "Lil Wayne", "NBA YoungBoy", "Kevin Gates", "Don Toliver", "Mac Miller", "Juicy J", "Twista", "Travis Scott", "Denzel Curry", "Rick Ross"
                 ];
-                
+
                 teams = [...region1, ...region2, ...region3, ...region4];
                 this.setRegionNames(["California", "Northeast", "Atl + Detroit", "South + Chiraq"]);
                 this.maintainRegionalBoundaries = true;
                 break;
-                
+
             case 'stags':
                 // Example NBA teams dataset
                 teams = [
@@ -477,7 +476,7 @@ class MarchMadnessBracket {
                 this.setRegionNames(["Fat", "Stinky", "Gay", "Cookie Monster"]);
                 this.maintainRegionalBoundaries = false;
                 break;
-                
+
             case 'food':
                 const foodRegion1 = [
                     "Burger", "Pizza", "Fried chicken", "Steak", "BBQ ribs", "BBQ brisket", "Pulled pork", "Mac & cheese",
@@ -503,7 +502,7 @@ class MarchMadnessBracket {
                 this.setRegionNames(["American", "Latin American", "Asian", "European"]);
                 this.maintainRegionalBoundaries = true;
                 break;
-                
+
             default:
                 // Allow custom array to be passed
                 if (Array.isArray(datasetName) && datasetName.length === 64) {
@@ -513,7 +512,7 @@ class MarchMadnessBracket {
                     return this.loadSampleTeams('rappers');
                 }
         }
-        
+
         this.setTeams(teams);
     }
 
@@ -543,7 +542,7 @@ class MarchMadnessBracket {
             // Shuffle all 64 teams together
             const allTeams = [...this.teams];
             const shuffledTeams = this.shuffleArray(allTeams);
-            
+
             // Set the fully randomized teams
             this.setTeams(shuffledTeams);
         }
@@ -560,33 +559,33 @@ class MarchMadnessBracket {
 
     toggleCustomInput() {
         const container = document.getElementById('custom-input-container');
-        container.style.display = container.style.display === 'none' ? 'block' : 'none';
+        container.classList.toggle('hidden');
     }
 
     hideCustomInput() {
-        document.getElementById('custom-input-container').style.display = 'none';
+        document.getElementById('custom-input-container').classList.add('hidden');
     }
 
     loadCustomSongs() {
         const regions = [];
-        
+
         for (let i = 1; i <= 4; i++) {
             const textarea = document.getElementById(`region-${i}-input`);
             const songs = textarea.value.trim().split('\n').filter(song => song.trim() !== '');
-            
+
             if (songs.length !== 16) {
                 alert(`Region ${i} must have exactly 16 songs. Currently has ${songs.length}.`);
                 return;
             }
-            
+
             regions.push(...songs);
         }
-        
+
         if (regions.length !== 64) {
             alert(`Total songs must be 64. Currently have ${regions.length}.`);
             return;
         }
-        
+
         try {
             this.setTeams(regions);
             this.hideCustomInput();
@@ -672,16 +671,16 @@ function validateTeams(teams) {
     if (!Array.isArray(teams)) {
         throw new Error('Teams must be provided as an array');
     }
-    
+
     if (teams.length !== 64) {
         throw new Error(`Expected 64 teams, got ${teams.length}`);
     }
-    
+
     // Check for duplicates
     const uniqueTeams = new Set(teams);
     if (uniqueTeams.size !== teams.length) {
         throw new Error('Duplicate teams found in the list');
     }
-    
+
     return true;
 }
