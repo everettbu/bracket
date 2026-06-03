@@ -570,7 +570,7 @@ class MarchMadnessBracket {
 
             case 'bbq':
                 teams = [
-                    "Mike", "Dave", "Steve", "John", "Chris", "Matt", "Brian", "Kevin", "Jason", "Mark", "Jeff", "Dan", "Ryan", "Josh", "Nick", "Eric",
+                    "Mike", "Dave", "Steve", "John", "Chris", "Matt", "Brian", "Kevin", "Jason", "Mark", "Jeff", "Dan", "Craig", "Josh", "Nick", "Eric",
                     "Scott", "Greg", "Tim", "Tony", "Rob", "Patrick", "Sean", "Kyle", "Tyler", "Jake", "Ben", "Sam", "Alex", "Luke", "Adam", "Zach",
                     "Justin", "Brandon", "Travis", "Cody", "Dylan", "Nathan", "Andrew", "Aaron", "Jeremy", "Brett", "Brad", "Trevor", "Connor", "Austin", "Jordan", "Logan",
                     "Ethan", "Caleb", "Garrett", "Derek", "Drew", "Shane", "Cole", "Mason", "Owen", "Liam", "Noah", "Henry", "Jack", "Charlie", "Max", "Teddy"
