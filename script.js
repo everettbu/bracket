@@ -660,10 +660,10 @@ class MarchMadnessBracket {
 
             case 'bbq':
                 teams = [
-                    "Mike", "Dave", "Steve", "John", "Chris", "Matt", "Brian", "Kevin", "Jason", "Mark", "Jeff", "Dan", "Craig", "Josh", "Nick", "Eric",
-                    "Scott", "Greg", "Tim", "Tony", "Rob", "Patrick", "Sean", "Kyle", "Tyler", "Jake", "Ben", "Sam", "Alex", "Luke", "Adam", "Zach",
-                    "Justin", "Brandon", "Travis", "Cody", "Dylan", "Nathan", "Andrew", "Aaron", "Jeremy", "Brett", "Brad", "Trevor", "Connor", "Austin", "Jordan", "Logan",
-                    "Ethan", "Caleb", "Garrett", "Derek", "Drew", "Shane", "Cole", "Mason", "Owen", "Liam", "Noah", "Henry", "Jack", "Charlie", "Max", "Teddy"
+                    "Mike", "Dave", "Steve", "John", "Chris", "Matt", "Brian", "Kevin", "Jason", "Mark", "Jeff", "Dan", "Rob", "Craig", "Nick", "Eric",
+                    "Carlos", "Mateo", "Paulo", "Giovanni", "Marco", "Nico", "Enzo", "Rafael", "Diego", "Antonio", "Javier", "Dante", "Andre", "Lorenzo", "Emilio", "Victor",
+                    "Alex", "Ben", "Sam", "Jake", "Luke", "Adam", "Zach", "Justin", "Tyler", "Cody", "Travis", "Shane", "Brett", "Drew", "Cole", "Max",
+                    "Marcus", "Omar", "Adrian", "Julian", "Jamal", "Malik", "Darius", "Gabriel", "Liam", "Noah", "Ethan", "Logan", "Mason", "Henry", "Jack", "Theo"
                 ];
                 this.setRegionNames(["Region 1", "Region 2", "Region 3", "Region 4"]);
                 this.maintainRegionalBoundaries = false;
