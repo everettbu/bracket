@@ -69,6 +69,7 @@ class MarchMadnessBracket {
             food: 'Food Bracket',
             rappers: 'Rapper Bracket',
             stags: 'Stags Bracket',
+            bbq: 'BBQ Bracket',
             custom: 'Custom Bracket'
         };
         const titleEl = document.getElementById('bracket-title');
@@ -297,8 +298,9 @@ class MarchMadnessBracket {
             teamDiv.textContent = teamName;
 
             if (isWinner) {
-                // Winner state
-                teamDiv.className = `${baseClasses} bg-emerald-600 text-white cursor-pointer`;
+                // Winner state (click again to undo the pick)
+                teamDiv.className = `${baseClasses} bg-emerald-600 hover:bg-emerald-500 text-white cursor-pointer`;
+                teamDiv.title = 'Click to undo this pick';
             } else if (match && match.winner && match.winner !== teamName) {
                 // Loser state
                 teamDiv.className = `${baseClasses} bg-zinc-800 text-zinc-500 opacity-60 cursor-not-allowed`;
@@ -332,27 +334,90 @@ class MarchMadnessBracket {
 
         if (!match) return;
 
-        // Set winner
-        match.winner = teamName;
-
-        // Advance winner
-        this.advanceWinner(section, round, matchIndex, teamName);
-
-        // Re-render affected sections
-        if (section.startsWith('q')) {
-            const quadrant = parseInt(section.slice(1));
-            this.renderQuadrant(quadrant);
-            if (round === 4) {
-                this.renderFinalFour();
+        if (match.winner === teamName) {
+            // Clicking the current winner undoes the pick and rolls back their advancement
+            match.winner = null;
+            this.removeFromDownstream(section, round, matchIndex, teamName);
+        } else {
+            // Overwriting a previous pick: roll back the old winner's advancement first
+            if (match.winner) {
+                this.removeFromDownstream(section, round, matchIndex, match.winner);
             }
-        } else if (section === 'f4') {
-            this.renderFinalFour();
-            this.renderChampionship();
-        } else if (section === 'champ') {
-            this.renderChampionship();
+
+            // Set winner
+            match.winner = teamName;
+
+            // Advance winner
+            this.advanceWinner(section, round, matchIndex, teamName);
         }
 
-        this.renderChampion();
+        this.renderBracket();
+    }
+
+    removeFromDownstream(section, round, matchIndex, team) {
+        if (section.startsWith('q')) {
+            const quadrant = parseInt(section.slice(1));
+
+            if (round < 4) {
+                // Remove from next round within quadrant
+                const nextRound = round + 1;
+                const nextMatchIndex = Math.floor(matchIndex / 2);
+                const teamPosition = matchIndex % 2;
+                const nextMatch = this.bracket.quadrants[quadrant].rounds[nextRound][nextMatchIndex];
+
+                if (teamPosition === 0 && nextMatch.team1 === team) {
+                    nextMatch.team1 = null;
+                } else if (teamPosition === 1 && nextMatch.team2 === team) {
+                    nextMatch.team2 = null;
+                } else {
+                    return;
+                }
+
+                if (nextMatch.winner === team) {
+                    nextMatch.winner = null;
+                    this.removeFromDownstream(section, nextRound, nextMatchIndex, team);
+                }
+            } else if (round === 4) {
+                // Remove from Final Four
+                const finalFourIndex = quadrant <= 2 ? 0 : 1;
+                const teamPosition = (quadrant - 1) % 2;
+                const nextMatch = this.bracket.finalFour[finalFourIndex];
+
+                if (teamPosition === 0 && nextMatch.team1 === team) {
+                    nextMatch.team1 = null;
+                } else if (teamPosition === 1 && nextMatch.team2 === team) {
+                    nextMatch.team2 = null;
+                } else {
+                    return;
+                }
+
+                if (nextMatch.winner === team) {
+                    nextMatch.winner = null;
+                    this.removeFromDownstream('f4', 5, finalFourIndex, team);
+                }
+            }
+        } else if (section === 'f4') {
+            // Remove from Championship
+            const champMatch = this.bracket.championship;
+
+            if (matchIndex === 0 && champMatch.team1 === team) {
+                champMatch.team1 = null;
+            } else if (matchIndex === 1 && champMatch.team2 === team) {
+                champMatch.team2 = null;
+            } else {
+                return;
+            }
+
+            if (champMatch.winner === team) {
+                champMatch.winner = null;
+                this.removeFromDownstream('champ', 6, 0, team);
+            }
+        } else if (section === 'champ') {
+            // Clear overall winner
+            if (this.bracket.winner === team) {
+                this.bracket.winner = null;
+            }
+        }
     }
 
     advanceWinner(section, round, matchIndex, winner) {
@@ -501,6 +566,17 @@ class MarchMadnessBracket {
                 teams = [...foodRegion1, ...foodRegion2, ...foodRegion3, ...foodRegion4];
                 this.setRegionNames(["American", "Latin American", "Asian", "European"]);
                 this.maintainRegionalBoundaries = true;
+                break;
+
+            case 'bbq':
+                teams = [
+                    "Mike", "Dave", "Steve", "John", "Chris", "Matt", "Brian", "Kevin", "Jason", "Mark", "Jeff", "Dan", "Ryan", "Josh", "Nick", "Eric",
+                    "Scott", "Greg", "Tim", "Tony", "Rob", "Patrick", "Sean", "Kyle", "Tyler", "Jake", "Ben", "Sam", "Alex", "Luke", "Adam", "Zach",
+                    "Justin", "Brandon", "Travis", "Cody", "Dylan", "Nathan", "Andrew", "Aaron", "Jeremy", "Brett", "Brad", "Trevor", "Connor", "Austin", "Jordan", "Logan",
+                    "Ethan", "Caleb", "Garrett", "Derek", "Drew", "Shane", "Cole", "Mason", "Owen", "Liam", "Noah", "Henry", "Jack", "Charlie", "Max", "Teddy"
+                ];
+                this.setRegionNames(["Region 1", "Region 2", "Region 3", "Region 4"]);
+                this.maintainRegionalBoundaries = false;
                 break;
 
             default:
