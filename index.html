@@ -3,177 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tournament Bracket</title>
+    <title>BovaBalls — Settle It With a Bracket</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Slow-floating BBQ emojis in the hero background */
+        .float-emoji {
+            position: absolute;
+            opacity: 0.15;
+            animation: float-drift 14s ease-in-out infinite;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        @keyframes float-drift {
+            0%, 100% { transform: translateY(0) rotate(-8deg); }
+            50% { transform: translateY(-30px) rotate(8deg); }
+        }
+    </style>
 </head>
-<body class="bg-zinc-900 text-white min-h-screen">
-    <div class="w-full max-w-[1600px] mx-auto px-4 py-6">
-        <h1 id="bracket-title" class="text-2xl md:text-3xl font-bold text-center mb-6 text-zinc-100">Tournament Bracket</h1>
+<body class="bg-zinc-900 text-white min-h-screen flex flex-col">
+    <main class="flex-1 flex flex-col items-center justify-center px-4 relative overflow-hidden">
+        <!-- Floating background emojis -->
+        <span class="float-emoji text-6xl" style="top: 12%; left: 10%;">🍖</span>
+        <span class="float-emoji text-5xl" style="top: 22%; right: 14%; animation-delay: -4s;">🔥</span>
+        <span class="float-emoji text-6xl" style="bottom: 18%; left: 18%; animation-delay: -8s;">🌭</span>
+        <span class="float-emoji text-5xl" style="bottom: 24%; right: 10%; animation-delay: -11s;">🏆</span>
 
-        <div class="flex flex-col gap-4">
-            <!-- Top Half: Regions 1 & 2 -->
-            <div class="flex flex-col lg:flex-row gap-4">
-                <div class="flex-1 bg-zinc-800/50 rounded-lg p-4 border border-zinc-700" id="quadrant-1">
-                    <h2 class="text-center text-zinc-400 font-medium mb-3">Region 1</h2>
-                    <div class="quadrant-bracket flex gap-2">
-                        <div class="round flex-1">
-                            <h4 class="text-xs text-zinc-500 text-center mb-2">Rd of 64</h4>
-                            <div class="matches flex flex-col gap-2" id="round-1-q1-matches"></div>
-                        </div>
-                        <div class="round flex-1">
-                            <h4 class="text-xs text-zinc-500 text-center mb-2">Rd of 32</h4>
-                            <div class="matches flex flex-col gap-2" id="round-2-q1-matches"></div>
-                        </div>
-                        <div class="round flex-1">
-                            <h4 class="text-xs text-zinc-500 text-center mb-2">Sweet 16</h4>
-                            <div class="matches flex flex-col gap-2" id="round-3-q1-matches"></div>
-                        </div>
-                        <div class="round flex-1">
-                            <h4 class="text-xs text-zinc-500 text-center mb-2">Elite 8</h4>
-                            <div class="matches flex flex-col gap-2" id="round-4-q1-matches"></div>
-                        </div>
-                    </div>
-                </div>
+        <!-- Hero -->
+        <div class="text-center max-w-2xl relative z-10">
+            <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-4">
+                Bova<span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-yellow-500">Balls</span>
+            </h1>
+            <p class="text-lg md:text-xl text-zinc-400 mb-10">
+                64 enter. One leaves. Settle it with a bracket.
+            </p>
 
-                <div class="flex-1 bg-zinc-800/50 rounded-lg p-4 border border-zinc-700" id="quadrant-2">
-                    <h2 class="text-center text-zinc-400 font-medium mb-3">Region 2</h2>
-                    <div class="quadrant-bracket flex flex-row-reverse gap-2">
-                        <div class="round flex-1">
-                            <h4 class="text-xs text-zinc-500 text-center mb-2">Rd of 64</h4>
-                            <div class="matches flex flex-col gap-2" id="round-1-q2-matches"></div>
-                        </div>
-                        <div class="round flex-1">
-                            <h4 class="text-xs text-zinc-500 text-center mb-2">Rd of 32</h4>
-                            <div class="matches flex flex-col gap-2" id="round-2-q2-matches"></div>
-                        </div>
-                        <div class="round flex-1">
-                            <h4 class="text-xs text-zinc-500 text-center mb-2">Sweet 16</h4>
-                            <div class="matches flex flex-col gap-2" id="round-3-q2-matches"></div>
-                        </div>
-                        <div class="round flex-1">
-                            <h4 class="text-xs text-zinc-500 text-center mb-2">Elite 8</h4>
-                            <div class="matches flex flex-col gap-2" id="round-4-q2-matches"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <a href="/bracket/" class="inline-block px-8 py-4 bg-emerald-600 hover:bg-emerald-500 text-white text-lg font-semibold rounded-xl transition-colors shadow-lg shadow-emerald-900/40">
+                Enter the Bracket
+            </a>
 
-            <!-- Center: Final Four and Championship -->
-            <div class="bg-zinc-800/50 rounded-lg p-4 border border-zinc-700">
-                <div class="flex flex-col md:flex-row justify-center items-stretch gap-6">
-                    <div class="flex-1 max-w-sm">
-                        <h3 class="text-sm text-zinc-400 text-center mb-2 font-medium">Final 4</h3>
-                        <div class="matches flex flex-row gap-2" id="round-5-matches"></div>
-                    </div>
-
-                    <div class="flex-1 max-w-xs">
-                        <h3 class="text-sm text-zinc-400 text-center mb-2 font-medium">Championship</h3>
-                        <div class="matches" id="round-6-matches"></div>
-                    </div>
-
-                    <div class="flex-1 max-w-xs">
-                        <h3 class="text-sm text-zinc-400 text-center mb-2 font-medium">Champion</h3>
-                        <div id="champion" class="bg-gradient-to-r from-amber-500 to-yellow-500 text-zinc-900 font-bold rounded-lg p-3 text-center">
-                            <div class="team-slot">TBD</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Bottom Half: Regions 3 & 4 -->
-            <div class="flex flex-col lg:flex-row gap-4">
-                <div class="flex-1 bg-zinc-800/50 rounded-lg p-4 border border-zinc-700" id="quadrant-3">
-                    <h2 class="text-center text-zinc-400 font-medium mb-3">Region 3</h2>
-                    <div class="quadrant-bracket flex gap-2">
-                        <div class="round flex-1">
-                            <h4 class="text-xs text-zinc-500 text-center mb-2">Rd of 64</h4>
-                            <div class="matches flex flex-col gap-2" id="round-1-q3-matches"></div>
-                        </div>
-                        <div class="round flex-1">
-                            <h4 class="text-xs text-zinc-500 text-center mb-2">Rd of 32</h4>
-                            <div class="matches flex flex-col gap-2" id="round-2-q3-matches"></div>
-                        </div>
-                        <div class="round flex-1">
-                            <h4 class="text-xs text-zinc-500 text-center mb-2">Sweet 16</h4>
-                            <div class="matches flex flex-col gap-2" id="round-3-q3-matches"></div>
-                        </div>
-                        <div class="round flex-1">
-                            <h4 class="text-xs text-zinc-500 text-center mb-2">Elite 8</h4>
-                            <div class="matches flex flex-col gap-2" id="round-4-q3-matches"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="flex-1 bg-zinc-800/50 rounded-lg p-4 border border-zinc-700" id="quadrant-4">
-                    <h2 class="text-center text-zinc-400 font-medium mb-3">Region 4</h2>
-                    <div class="quadrant-bracket flex flex-row-reverse gap-2">
-                        <div class="round flex-1">
-                            <h4 class="text-xs text-zinc-500 text-center mb-2">Rd of 64</h4>
-                            <div class="matches flex flex-col gap-2" id="round-1-q4-matches"></div>
-                        </div>
-                        <div class="round flex-1">
-                            <h4 class="text-xs text-zinc-500 text-center mb-2">Rd of 32</h4>
-                            <div class="matches flex flex-col gap-2" id="round-2-q4-matches"></div>
-                        </div>
-                        <div class="round flex-1">
-                            <h4 class="text-xs text-zinc-500 text-center mb-2">Sweet 16</h4>
-                            <div class="matches flex flex-col gap-2" id="round-3-q4-matches"></div>
-                        </div>
-                        <div class="round flex-1">
-                            <h4 class="text-xs text-zinc-500 text-center mb-2">Elite 8</h4>
-                            <div class="matches flex flex-col gap-2" id="round-4-q4-matches"></div>
-                        </div>
-                    </div>
-                </div>
+            <!-- Bracket lineup -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-14">
+                <a href="/bracket/?bracket=food" class="block bg-zinc-800/50 hover:bg-zinc-700/60 border border-zinc-700 hover:border-zinc-500 rounded-lg p-4 transition-colors">
+                    <div class="text-3xl mb-2">🍔</div>
+                    <div class="text-sm font-medium text-zinc-200">Food</div>
+                </a>
+                <a href="/bracket/?bracket=rappers" class="block bg-zinc-800/50 hover:bg-zinc-700/60 border border-zinc-700 hover:border-zinc-500 rounded-lg p-4 transition-colors">
+                    <div class="text-3xl mb-2">🎤</div>
+                    <div class="text-sm font-medium text-zinc-200">Rappers</div>
+                </a>
+                <a href="/bracket/?bracket=stags" class="block bg-zinc-800/50 hover:bg-zinc-700/60 border border-zinc-700 hover:border-zinc-500 rounded-lg p-4 transition-colors">
+                    <div class="text-3xl mb-2">🦌</div>
+                    <div class="text-sm font-medium text-zinc-200">Stags</div>
+                </a>
+                <a href="/bracket/?bracket=bbq" class="block bg-zinc-800/50 hover:bg-zinc-700/60 border border-zinc-700 hover:border-zinc-500 rounded-lg p-4 transition-colors">
+                    <div class="text-3xl mb-2">🍖</div>
+                    <div class="text-sm font-medium text-zinc-200">BBQ</div>
+                </a>
             </div>
         </div>
-
-        <!-- Bracket Selector -->
-        <div class="fixed top-4 right-4 z-50 bg-zinc-800 border border-zinc-700 rounded-lg p-3 flex items-center gap-2 flex-wrap">
-            <span class="text-sm text-zinc-400">Bracket:</span>
-            <button class="bracket-option px-3 py-1.5 text-sm rounded-md bg-zinc-700 text-zinc-100 hover:bg-zinc-600 transition-colors" data-bracket="food">Food</button>
-            <button class="bracket-option px-3 py-1.5 text-sm rounded-md bg-zinc-700 text-zinc-100 hover:bg-zinc-600 transition-colors" data-bracket="rappers">Rappers</button>
-            <button class="bracket-option px-3 py-1.5 text-sm rounded-md bg-zinc-700 text-zinc-100 hover:bg-zinc-600 transition-colors" data-bracket="stags">Stags</button>
-            <button class="bracket-option px-3 py-1.5 text-sm rounded-md bg-zinc-700 text-zinc-100 hover:bg-zinc-600 transition-colors" data-bracket="bbq">BBQ</button>
-        </div>
-
-        <!-- Controls -->
-        <div class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex gap-3">
-            <button id="reset-bracket" class="px-4 py-2 bg-zinc-700 hover:bg-zinc-600 text-white rounded-lg text-sm font-medium transition-colors">Reset Bracket</button>
-            <button id="randomize-teams" class="px-4 py-2 bg-zinc-700 hover:bg-zinc-600 text-white rounded-lg text-sm font-medium transition-colors">Randomize Teams</button>
-        </div>
-
-        <!-- Custom Input Modal -->
-        <div class="custom-input-container hidden fixed inset-0 z-[100] flex items-center justify-center bg-black/50" id="custom-input-container">
-            <div class="bg-zinc-800 border border-zinc-700 rounded-lg p-6 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-                <h3 class="text-lg font-medium text-zinc-100 text-center mb-4">Enter 16 items for each region (one per line)</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <div>
-                        <h4 class="text-sm text-zinc-400 mb-2">Region 1</h4>
-                        <textarea id="region-1-input" class="w-full h-48 bg-zinc-900 border border-zinc-600 rounded-lg p-3 text-zinc-100 text-sm resize-y focus:outline-none focus:border-zinc-500" placeholder="Enter 16 items, one per line..."></textarea>
-                    </div>
-                    <div>
-                        <h4 class="text-sm text-zinc-400 mb-2">Region 2</h4>
-                        <textarea id="region-2-input" class="w-full h-48 bg-zinc-900 border border-zinc-600 rounded-lg p-3 text-zinc-100 text-sm resize-y focus:outline-none focus:border-zinc-500" placeholder="Enter 16 items, one per line..."></textarea>
-                    </div>
-                    <div>
-                        <h4 class="text-sm text-zinc-400 mb-2">Region 3</h4>
-                        <textarea id="region-3-input" class="w-full h-48 bg-zinc-900 border border-zinc-600 rounded-lg p-3 text-zinc-100 text-sm resize-y focus:outline-none focus:border-zinc-500" placeholder="Enter 16 items, one per line..."></textarea>
-                    </div>
-                    <div>
-                        <h4 class="text-sm text-zinc-400 mb-2">Region 4</h4>
-                        <textarea id="region-4-input" class="w-full h-48 bg-zinc-900 border border-zinc-600 rounded-lg p-3 text-zinc-100 text-sm resize-y focus:outline-none focus:border-zinc-500" placeholder="Enter 16 items, one per line..."></textarea>
-                    </div>
-                </div>
-                <div class="flex justify-center gap-3">
-                    <button id="load-custom-songs" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-sm font-medium transition-colors">Load Custom</button>
-                    <button id="cancel-custom-input" class="px-4 py-2 bg-zinc-700 hover:bg-zinc-600 text-white rounded-lg text-sm font-medium transition-colors">Cancel</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
+    </main>
 </body>
 </html>

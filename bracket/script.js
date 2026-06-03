@@ -13,6 +13,15 @@ class MarchMadnessBracket {
     init() {
         this.setupEventListeners();
         this.initializeBracket();
+        this.loadBracketFromURL();
+    }
+
+    loadBracketFromURL() {
+        // Deep link support: /bracket/?bracket=bbq pre-selects that bracket
+        const bracketType = new URLSearchParams(window.location.search).get('bracket');
+        if (bracketType && document.querySelector(`[data-bracket="${bracketType}"]`)) {
+            this.selectBracket(bracketType);
+        }
     }
 
     setupEventListeners() {
@@ -64,6 +73,8 @@ class MarchMadnessBracket {
             this.hideCustomInput();
             this.loadSampleTeams(bracketType);
             this.updateTitle(bracketType);
+            // Keep the URL in sync so the current bracket can be shared/deep-linked
+            history.replaceState(null, '', `?bracket=${bracketType}`);
         }
     }
 
@@ -82,11 +93,46 @@ class MarchMadnessBracket {
     }
 
     initializeBracket() {
-        // Initialize bracket structure for 6 rounds
-        for (let round = 1; round <= this.maxRounds; round++) {
-            this.bracket[round] = [];
-        }
+        this.createEmptyBracket();
         this.renderBracket();
+    }
+
+    createEmptyBracket() {
+        this.bracket = {
+            quadrants: {
+                1: { rounds: {} },
+                2: { rounds: {} },
+                3: { rounds: {} },
+                4: { rounds: {} }
+            },
+            finalFour: [
+                { team1: null, team2: null, winner: null, matchId: 'f4-m1' },
+                { team1: null, team2: null, winner: null, matchId: 'f4-m2' }
+            ],
+            championship: {
+                team1: null,
+                team2: null,
+                winner: null,
+                matchId: 'championship'
+            },
+            winner: null
+        };
+
+        // All quadrant rounds start as empty TBD matches
+        for (let quadrant = 1; quadrant <= 4; quadrant++) {
+            for (let round = 1; round <= 4; round++) {
+                const numMatches = Math.pow(2, 4 - round);
+                this.bracket.quadrants[quadrant].rounds[round] = [];
+                for (let i = 0; i < numMatches; i++) {
+                    this.bracket.quadrants[quadrant].rounds[round].push({
+                        team1: null,
+                        team2: null,
+                        winner: null,
+                        matchId: `q${quadrant}-r${round}-m${i}`
+                    });
+                }
+            }
+        }
     }
 
     setTeams(teams) {
@@ -152,62 +198,18 @@ class MarchMadnessBracket {
     }
 
     populateFirstRound() {
-        // Initialize bracket structure for quadrants
-        this.bracket = {
-            quadrants: {
-                1: { rounds: {} },
-                2: { rounds: {} },
-                3: { rounds: {} },
-                4: { rounds: {} }
-            },
-            finalFour: [],
-            championship: null,
-            winner: null
-        };
+        this.createEmptyBracket();
 
-        // Populate each quadrant with 16 teams (4 rounds each)
+        // Fill round 1 of each quadrant with 16 teams
         for (let quadrant = 1; quadrant <= 4; quadrant++) {
             const startIndex = (quadrant - 1) * 16;
             const quadrantTeams = this.teams.slice(startIndex, startIndex + 16);
 
-            // Round 1: 16 teams -> 8 matches
-            this.bracket.quadrants[quadrant].rounds[1] = [];
-            for (let i = 0; i < 16; i += 2) {
-                this.bracket.quadrants[quadrant].rounds[1].push({
-                    team1: quadrantTeams[i],
-                    team2: quadrantTeams[i + 1],
-                    winner: null,
-                    matchId: `q${quadrant}-r1-m${Math.floor(i / 2)}`
-                });
-            }
-
-            // Initialize empty rounds for quadrant
-            for (let round = 2; round <= 4; round++) {
-                const numMatches = Math.pow(2, 4 - round);
-                this.bracket.quadrants[quadrant].rounds[round] = [];
-                for (let i = 0; i < numMatches; i++) {
-                    this.bracket.quadrants[quadrant].rounds[round].push({
-                        team1: null,
-                        team2: null,
-                        winner: null,
-                        matchId: `q${quadrant}-r${round}-m${i}`
-                    });
-                }
-            }
+            this.bracket.quadrants[quadrant].rounds[1].forEach((match, i) => {
+                match.team1 = quadrantTeams[i * 2];
+                match.team2 = quadrantTeams[i * 2 + 1];
+            });
         }
-
-        // Initialize Final Four and Championship
-        this.bracket.finalFour = [
-            { team1: null, team2: null, winner: null, matchId: 'f4-m1' },
-            { team1: null, team2: null, winner: null, matchId: 'f4-m2' }
-        ];
-
-        this.bracket.championship = {
-            team1: null,
-            team2: null,
-            winner: null,
-            matchId: 'championship'
-        };
     }
 
     renderBracket() {
@@ -585,13 +587,7 @@ class MarchMadnessBracket {
         if (this.teams.length === 64) {
             this.populateFirstRound();
         } else {
-            // Clear bracket structure
-            this.bracket = {
-                quadrants: { 1: { rounds: {} }, 2: { rounds: {} }, 3: { rounds: {} }, 4: { rounds: {} } },
-                finalFour: [],
-                championship: null,
-                winner: null
-            };
+            this.createEmptyBracket();
         }
 
         this.renderBracket();
@@ -756,6 +752,8 @@ class MarchMadnessBracket {
             this.setTeams(regions);
             this.hideCustomInput();
             this.updateTitle('custom');
+            // Custom data can't be deep-linked, so drop any bracket param
+            history.replaceState(null, '', window.location.pathname);
 
             // Clear the text areas
             for (let i = 1; i <= 4; i++) {
