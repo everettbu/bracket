@@ -6,6 +6,7 @@ class MarchMadnessBracket {
         this.maxRounds = 6;
         this.regionNames = ["Region 1", "Region 2", "Region 3", "Region 4"];
         this.maintainRegionalBoundaries = false;
+        this.currentBracketType = null;
         this.init();
     }
 
@@ -46,6 +47,8 @@ class MarchMadnessBracket {
     }
 
     selectBracket(bracketType) {
+        this.currentBracketType = bracketType;
+
         // Update active button state
         document.querySelectorAll('.bracket-option').forEach(btn => {
             btn.classList.remove('bg-emerald-600', 'text-white');
@@ -310,14 +313,14 @@ class MarchMadnessBracket {
             }
 
             teamDiv.addEventListener('click', () => {
-                this.selectWinner(section, round, matchIndex, teamName, teamIndex);
+                this.selectWinner(section, round, matchIndex, teamName, teamIndex, teamDiv);
             });
         }
 
         return teamDiv;
     }
 
-    selectWinner(section, round, matchIndex, teamName, teamIndex) {
+    selectWinner(section, round, matchIndex, teamName, teamIndex, sourceEl = null) {
         if (!teamName || teamName === 'TBD') return;
 
         let match;
@@ -349,9 +352,96 @@ class MarchMadnessBracket {
 
             // Advance winner
             this.advanceWinner(section, round, matchIndex, teamName);
+
+            // Celebrate with a BBQ emoji burst — BBQ bracket only (capture position before re-render destroys the element)
+            // Builds momentum by round: popcorn grows through the Elite 8, then the
+            // Final Four and Championship go full radial explosion.
+            if (sourceEl && this.currentBracketType === 'bbq') {
+                const rect = sourceEl.getBoundingClientRect();
+                const cx = rect.left + rect.width / 2;
+                const cy = rect.top + rect.height / 2;
+
+                if (round === 6) {
+                    this.spawnEmojiBurst(cx, cy, 24, 'firework');
+                } else if (round === 5) {
+                    this.spawnEmojiBurst(cx, cy, 10, 'explosion');
+                } else if (round === 4) {
+                    this.spawnEmojiBurst(cx, cy, 6, 'explosion');
+                } else {
+                    this.spawnEmojiBurst(cx, cy, round, 'popcorn');
+                }
+            }
         }
 
         this.renderBracket();
+    }
+
+    spawnEmojiBurst(x, y, count = 3, style = 'popcorn') {
+        const emojis = ['🍖', '🍗', '🥩', '🌭', '🍔', '🥓'];
+
+        // Firework opens with a bright flash at the burst point
+        if (style === 'firework') {
+            const flash = document.createElement('div');
+            flash.className = 'bbq-firework-flash';
+            flash.style.left = `${x}px`;
+            flash.style.top = `${y}px`;
+            flash.addEventListener('animationend', () => flash.remove());
+            setTimeout(() => flash.remove(), 2000);
+            document.body.appendChild(flash);
+        }
+
+        const styleClasses = {
+            explosion: 'bbq-emoji bbq-emoji-explode',
+            firework: 'bbq-emoji bbq-emoji-firework'
+        };
+
+        for (let i = 0; i < count; i++) {
+            const particle = document.createElement('span');
+            particle.className = styleClasses[style] || 'bbq-emoji';
+            particle.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+            particle.style.left = `${x}px`;
+            particle.style.top = `${y}px`;
+
+            if (style === 'explosion') {
+                // Explosion: blast radially in all directions, bigger and nearly simultaneous
+                const angle = Math.random() * Math.PI * 2;
+                const distance = 70 + Math.random() * 90;
+                particle.style.fontSize = `${1.3 + Math.random() * 0.8}rem`;
+                particle.style.setProperty('--dx', `${Math.cos(angle) * distance}px`);
+                particle.style.setProperty('--dy', `${Math.sin(angle) * distance}px`);
+                particle.style.animationDelay = `${i * 25}ms`;
+            } else if (style === 'firework') {
+                // Firework shell: evenly spaced around the full circle with jitter,
+                // one simultaneous boom rather than a stagger
+                const angle = (i / count) * Math.PI * 2 + (Math.random() - 0.5) * 0.4;
+                const distance = 100 + Math.random() * 70;
+                particle.style.fontSize = `${1.2 + Math.random() * 0.7}rem`;
+                particle.style.setProperty('--dx', `${Math.cos(angle) * distance}px`);
+                particle.style.setProperty('--dy', `${Math.sin(angle) * distance}px`);
+                particle.style.animationDelay = `${Math.random() * 40}ms`;
+            } else {
+                // Popcorn pop: launch mostly upward, tilted up to 40 degrees off vertical either side
+                const tilt = Math.random() * (Math.PI * 40 / 180); // 0-40 degrees off straight up
+                const side = Math.random() < 0.5 ? -1 : 1;
+                const distance = 50 + Math.random() * 60;
+                particle.style.fontSize = `${1.1 + Math.random() * 0.6}rem`;
+                particle.style.setProperty('--dx', `${side * Math.sin(tilt) * distance}px`);
+                particle.style.setProperty('--dy', `${-Math.cos(tilt) * distance}px`);
+                particle.style.animationDelay = `${i * 60}ms`;
+            }
+
+            particle.style.setProperty('--spin', `${(Math.random() - 0.5) * 540}deg`);
+            // Fireworks linger longer for the hang-and-twinkle phase
+            particle.style.animationDuration = style === 'firework'
+                ? `${1.5 + Math.random() * 0.4}s`
+                : `${1 + Math.random() * 0.4}s`;
+
+            particle.addEventListener('animationend', () => particle.remove());
+            // Fallback cleanup in case animationend never fires (e.g. hidden tab)
+            setTimeout(() => particle.remove(), 3000);
+
+            document.body.appendChild(particle);
+        }
     }
 
     removeFromDownstream(section, round, matchIndex, team) {

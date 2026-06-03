@@ -51,6 +51,114 @@
     }
 }
 
+/* BBQ emoji burst: particles pop out of a picked name, arc, fall, fade away.
+   Hidden via base opacity until their staggered animation-delay kicks in. */
+.bbq-emoji {
+    position: fixed;
+    z-index: 200;
+    pointer-events: none;
+    margin-left: -0.75em;
+    margin-top: -0.75em;
+    opacity: 0;
+    animation: bbq-emoji-fall 1.2s ease-in forwards;
+}
+
+@keyframes bbq-emoji-fall {
+    0% {
+        transform: translate(0, 0) scale(0.4) rotate(0deg);
+        opacity: 1;
+        animation-timing-function: ease-out; /* fast launch, decelerate to the peak */
+    }
+    35% {
+        transform: translate(var(--dx), var(--dy)) scale(1.2) rotate(calc(var(--spin) * 0.3));
+        opacity: 1;
+        animation-timing-function: ease-in; /* accelerate on the way down */
+    }
+    100% {
+        transform: translate(calc(var(--dx) * 1.5), calc(var(--dy) + 160px)) scale(1) rotate(var(--spin));
+        opacity: 0;
+    }
+}
+
+/* Explosion variant for Final Four & Championship: radial blast in all directions */
+.bbq-emoji-explode {
+    animation-name: bbq-emoji-explode;
+}
+
+@keyframes bbq-emoji-explode {
+    0% {
+        transform: translate(0, 0) scale(0.3) rotate(0deg);
+        opacity: 1;
+        animation-timing-function: cubic-bezier(0.1, 0.85, 0.3, 1); /* shockwave: violent start, decelerating */
+    }
+    60% {
+        transform: translate(var(--dx), var(--dy)) scale(1.4) rotate(calc(var(--spin) * 0.6));
+        opacity: 1;
+        animation-timing-function: ease-out;
+    }
+    100% {
+        transform: translate(calc(var(--dx) * 1.5), calc(var(--dy) * 1.5 + 50px)) scale(1.2) rotate(var(--spin));
+        opacity: 0;
+    }
+}
+
+/* Firework for the Championship pick: flash + radial shell + twinkling fall */
+.bbq-firework-flash {
+    position: fixed;
+    z-index: 199;
+    pointer-events: none;
+    width: 160px;
+    height: 160px;
+    margin-left: -80px;
+    margin-top: -80px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 220, 120, 0.95) 0%, rgba(255, 150, 50, 0.5) 40%, transparent 70%);
+    animation: bbq-firework-flash 0.45s ease-out forwards;
+}
+
+@keyframes bbq-firework-flash {
+    0% {
+        transform: scale(0.1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1.7);
+        opacity: 0;
+    }
+}
+
+.bbq-emoji-firework {
+    animation-name: bbq-emoji-firework;
+}
+
+@keyframes bbq-emoji-firework {
+    0% {
+        transform: translate(0, 0) scale(0.2) rotate(0deg);
+        opacity: 1;
+        animation-timing-function: cubic-bezier(0.05, 0.9, 0.25, 1); /* shell burst: violent launch */
+    }
+    50% {
+        transform: translate(var(--dx), var(--dy)) scale(1.35) rotate(calc(var(--spin) * 0.5));
+        opacity: 1;
+        animation-timing-function: ease-in; /* hang at the peak, then gravity */
+    }
+    70% {
+        transform: translate(calc(var(--dx) * 1.08), calc(var(--dy) * 1.08 + 25px)) scale(1.2) rotate(calc(var(--spin) * 0.7));
+        opacity: 1;
+    }
+    /* Ember twinkle on the way down */
+    80% {
+        opacity: 0.45;
+    }
+    90% {
+        opacity: 0.85;
+    }
+    100% {
+        transform: translate(calc(var(--dx) * 1.2), calc(var(--dy) * 1.2 + 120px)) scale(1) rotate(var(--spin));
+        opacity: 0;
+    }
+}
+
 /* Hide custom input container by default */
 .custom-input-container.hidden {
     display: none;
