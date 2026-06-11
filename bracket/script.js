@@ -84,6 +84,7 @@ class MarchMadnessBracket {
             rappers: 'Rapper Bracket',
             stags: 'Stags Bracket',
             bbq: 'BBQ Bracket',
+            nations: 'Nations Bracket',
             custom: 'Custom Bracket'
         };
         const titleEl = document.getElementById('bracket-title');
@@ -652,6 +653,17 @@ class MarchMadnessBracket {
                 teams = [...foodRegion1, ...foodRegion2, ...foodRegion3, ...foodRegion4];
                 this.setRegionNames(["American", "Latin American", "Asian", "European"]);
                 this.maintainRegionalBoundaries = true;
+                break;
+
+            case 'nations':
+                teams = [
+                    "France", "Spain", "Argentina", "England", "Portugal", "Brazil", "Netherlands", "Morocco", "Belgium", "Germany", "Croatia", "Italy", "Colombia", "Senegal", "Mexico", "USA",
+                    "Uruguay", "Japan", "Switzerland", "Denmark", "Iran", "Türkiye", "Ecuador", "Austria", "South Korea", "Nigeria", "Australia", "Algeria", "Egypt", "Canada", "Norway", "Ukraine",
+                    "Panama", "Ivory Coast", "Poland", "Russia", "Wales", "Sweden", "Serbia", "Paraguay", "Czechia", "Hungary", "Scotland", "Tunisia", "Cameroon", "DR Congo", "Greece", "Slovakia",
+                    "Venezuela", "Uzbekistan", "Costa Rica", "Mali", "Peru", "Chile", "Qatar", "Romania", "Iraq", "Slovenia", "Ireland", "South Africa", "Saudi Arabia", "Burkina Faso", "Jordan", "Albania"
+                ];
+                this.setRegionNames(["Region 1", "Region 2", "Region 3", "Region 4"]);
+                this.maintainRegionalBoundaries = false;
                 break;
 
             case 'bbq':
