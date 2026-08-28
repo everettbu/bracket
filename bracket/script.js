@@ -85,6 +85,7 @@ class MarchMadnessBracket {
             stags: 'Stags Bracket',
             bbq: 'BBQ Bracket',
             nations: 'Nations Bracket',
+            nfl: 'NFL',
             custom: 'Custom Bracket'
         };
         const titleEl = document.getElementById('bracket-title');
@@ -672,6 +673,17 @@ class MarchMadnessBracket {
                     "Carlos", "Mateo", "Paulo", "Giovanni", "Marco", "Nico", "Enzo", "Rafael", "Diego", "Antonio", "Javier", "Dante", "Andre", "Lorenzo", "Emilio", "Victor",
                     "Alex", "Ben", "Sam", "Jake", "Luke", "Adam", "Zach", "Justin", "Tyler", "Cody", "Travis", "Shane", "Brett", "Drew", "Cole", "Max",
                     "Marcus", "Omar", "Adrian", "Julian", "Jamal", "Malik", "Darius", "Gabriel", "Liam", "Noah", "Ethan", "Logan", "Mason", "Henry", "Jack", "Theo"
+                ];
+                this.setRegionNames(["Region 1", "Region 2", "Region 3", "Region 4"]);
+                this.maintainRegionalBoundaries = false;
+                break;
+
+            case 'nfl':
+                teams = [
+                    "DeShawn", "Jake", "DeAndre", "Connor", "Marquis", "Tanner", "Darnell", "Wyatt", "Terrell", "Cody", "Malik", "Dustin", "Trevon", "Luke", "Tyrone", "Jack",
+                    "Willie", "Scott", "Dominique", "Logan", "Demetrius", "Cole", "Reginald", "Lucas", "Jamal", "Bradley", "Maurice", "Jacob", "Jalen", "Garrett", "Darius", "Dylan",
+                    "Xavier", "Maxwell", "Terrance", "Hunter", "Andre", "Brett", "Darryl", "Colin", "Rashad", "Austin", "DeMarcus", "Zachary", "Lamar", "Trevor", "Jermaine", "Kyle",
+                    "Khalil", "Spencer", "Desmond", "Chase", "Antwan", "Seth", "Tyrell", "Grant", "Dontae", "Parker", "DaQuan", "Brady", "Jamar", "Preston", "Deon", "Chad"
                 ];
                 this.setRegionNames(["Region 1", "Region 2", "Region 3", "Region 4"]);
                 this.maintainRegionalBoundaries = false;
