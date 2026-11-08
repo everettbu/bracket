@@ -377,7 +377,7 @@
 
   async function initPicker() {
     try {
-      const data = await (await fetch("search-terms.json", { cache: "no-store" })).json();
+      const data = await (await fetch("/bingo/search-terms.json", { cache: "no-store" })).json();
       const templates = (data.templates || []).map(s => String(s).trim()).filter(Boolean);
       if (!templates.length) return;
       const range = data.dateRange || {};
@@ -397,7 +397,7 @@
 
   (async function init() {
     try {
-      const res = await fetch("categories.json", { cache: "no-store" });
+      const res = await fetch("/bingo/categories.json", { cache: "no-store" });
       const data = await res.json();
       categories = [...new Set((data.categories || []).map(s => String(s).trim()).filter(Boolean))];
     } catch (e) {
