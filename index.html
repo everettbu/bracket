@@ -38,12 +38,19 @@
                 64 enter. One leaves. Settle it with a bracket.
             </p>
 
-            <a href="/bracket/" class="inline-block px-8 py-4 bg-emerald-600 hover:bg-emerald-500 text-white text-lg font-semibold rounded-xl transition-colors shadow-lg shadow-emerald-900/40">
-                Enter the Bracket
-            </a>
+            <!-- Two games: bracket and bingo -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="/bracket/" class="inline-block w-full sm:w-auto px-8 py-4 bg-emerald-600 hover:bg-emerald-500 text-white text-lg font-semibold rounded-xl transition-colors shadow-lg shadow-emerald-900/40">
+                    Enter the Bracket
+                </a>
+                <a href="/bingo/" class="inline-block w-full sm:w-auto px-8 py-4 bg-red-600 hover:bg-red-500 text-white text-lg font-semibold rounded-xl transition-colors shadow-lg shadow-red-900/40">
+                    Play Recycle Bin Bingo
+                </a>
+            </div>
 
             <!-- Bracket lineup -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-14">
+            <h2 class="mt-14 mb-3 text-xs font-semibold uppercase tracking-widest text-zinc-500">Brackets</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
                 <a href="/bracket/?bracket=food" class="block bg-zinc-800/50 hover:bg-zinc-700/60 border border-zinc-700 hover:border-zinc-500 rounded-lg p-4 transition-colors">
                     <div class="text-3xl mb-2">🍔</div>
                     <div class="text-sm font-medium text-zinc-200">Food</div>
@@ -67,10 +74,6 @@
                 <a href="/bracket/?bracket=nfl" class="block bg-zinc-800/50 hover:bg-zinc-700/60 border border-zinc-700 hover:border-zinc-500 rounded-lg p-4 transition-colors">
                     <div class="text-3xl mb-2">🏈</div>
                     <div class="text-sm font-medium text-zinc-200">NFL</div>
-                </a>
-                <a href="/bingo/" class="block bg-zinc-800/50 hover:bg-zinc-700/60 border border-zinc-700 hover:border-zinc-500 rounded-lg p-4 transition-colors">
-                    <div class="text-3xl mb-2">📼</div>
-                    <div class="text-sm font-medium text-zinc-200">Recycle Bin Bingo</div>
                 </a>
             </div>
         </div>
